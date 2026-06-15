@@ -1,68 +1,68 @@
 # rp2350-cmsis-dsp-example
 
-CMSIS-DSP examples for the **Raspberry Pi Pico 2 (RP2350)** — demonstrating ARM's official optimized DSP library running on Cortex-M33 with hardware DSP extensions (SIMD, MAC instructions).
+ตัวอย่างการใช้งาน CMSIS-DSP บน **Raspberry Pi Pico 2 (RP2350)** — สาธิตการใช้ไลบรารี DSP อย่างเป็นทางการของ ARM ที่ผ่านการปรับแต่งแล้ว บน Cortex-M33 พร้อมตัวขยาย DSP ระดับฮาร์ดแวร์ (SIMD และ MAC)
 
-Each example is self-contained and selectable via a single `#define`, outputting CSV data over USB CDC for easy analysis.
-
----
-
-## Examples
-
-| # | Name | CMSIS-DSP API | Description |
-|---|------|---------------|-------------|
-| 1 | **SINE_GEN** | `arm_sin_f32()`, `arm_cos_f32()` | Sine/cosine wave generation at 440 Hz — ARM polynomial approximation, faster than `sinf()` |
-| 2 | **MOVING_AVG** | `arm_mean_f32()`, `arm_copy_f32()`, `arm_fill_f32()` | 16-point sliding window moving average, SIMD-accelerated |
-| 3 | **FIR_FILTER** | `arm_fir_init_f32()`, `arm_fir_f32()` | 31-tap windowed sinc low-pass FIR (cutoff 1 kHz @ 8 kHz SR), ~4× faster than pure C |
-| 4 | **IIR_BIQUAD** | `arm_biquad_cascade_df1_init_f32()`, `arm_biquad_cascade_df1_f32()` | Butterworth 4th-order low-pass (fc = 1 kHz), 2-stage biquad cascade |
-| 5 | **FFT** | `arm_rfft_fast_f32()`, `arm_cmplx_mag_f32()`, `arm_max_f32()` | 256-point real FFT with Hann window — finds spectral peaks of 1 kHz + 2 kHz signal |
-| 6 | **GOERTZEL** | `arm_dot_prod_f32()` | DTMF tone decoder using Goertzel algorithm via SIMD dot-product |
+ตัวอย่างแต่ละชุดเป็นอิสระในตัวเอง เลือกใช้งานได้ด้วย `#define` เพียงบรรทัดเดียว และแสดงผลข้อมูลในรูปแบบ CSV ผ่าน USB CDC เพื่อให้วิเคราะห์ได้สะดวก
 
 ---
 
-## Hardware Requirements
+## ตัวอย่างการใช้งาน
 
-- **Raspberry Pi Pico 2** (RP2350, Cortex-M33) — or any Pico 2 variant
-- USB cable for power and serial output
+| # | ชื่อ | CMSIS-DSP API | คำอธิบาย |
+|---|------|---------------|----------|
+| 1 | **SINE_GEN** | `arm_sin_f32()`, `arm_cos_f32()` | สร้างคลื่นไซน์/โคไซน์ที่ 440 Hz — ใช้การประมาณค่าพหุนามของ ARM เร็วกว่า `sinf()` |
+| 2 | **MOVING_AVG** | `arm_mean_f32()`, `arm_copy_f32()`, `arm_fill_f32()` | ค่าเฉลี่ยเคลื่อนที่แบบ sliding window 16 จุด เร่งความเร็วด้วย SIMD |
+| 3 | **FIR_FILTER** | `arm_fir_init_f32()`, `arm_fir_f32()` | ฟิลเตอร์ FIR ผ่านต่ำ windowed sinc 31 tap (ความถี่ตัด 1 kHz ที่อัตราสุ่ม 8 kHz) เร็วกว่า pure C ประมาณ ~4× |
+| 4 | **IIR_BIQUAD** | `arm_biquad_cascade_df1_init_f32()`, `arm_biquad_cascade_df1_f32()` | ฟิลเตอร์ผ่านต่ำ Butterworth อันดับ 4 (fc = 1 kHz) แบบ biquad cascade 2 stage |
+| 5 | **FFT** | `arm_rfft_fast_f32()`, `arm_cmplx_mag_f32()`, `arm_max_f32()` | การแปลงฟูริเยร์แบบเร็ว (FFT) สำหรับสัญญาณจริง 256 จุด พร้อม Hann window — หา peak ของสเปกตรัมจากสัญญาณ 1 kHz + 2 kHz |
+| 6 | **GOERTZEL** | `arm_dot_prod_f32()` | ตัวถอดรหัสโทน DTMF (Dual-Tone Multi-Frequency) ด้วยขั้นตอนวิธี Goertzel ผ่าน SIMD dot product |
+
+---
+
+## ข้อกำหนดฮาร์ดแวร์
+
+- **Raspberry Pi Pico 2** (RP2350, Cortex-M33) — หรือบอร์ด Pico 2 รุ่นอื่นๆ
+- สาย USB สำหรับจ่ายไฟและรับส่งข้อมูลแบบอนุกรม
 
 > [!NOTE]
-> This project targets the **RP2350** specifically. The Cortex-M33 core provides hardware DSP extensions (SIMD, FPU) that CMSIS-DSP exploits for maximum performance. It will **not** build for the original Pico (RP2040 / Cortex-M0+).
+> โปรเจกต์นี้รองรับเฉพาะ **RP2350** เท่านั้น คอร์ Cortex-M33 มีตัวขยาย DSP ระดับฮาร์ดแวร์ (SIMD และ FPU) ซึ่ง CMSIS-DSP ใช้ประโยชน์เพื่อประสิทธิภาพสูงสุด **ไม่รองรับ** Pico รุ่นเดิม (RP2040 / Cortex-M0+)
 
 ---
 
-## Dependencies
+## ไลบรารีที่ต้องใช้
 
-| Dependency | Source | Version |
-|---|---|---|
-| [Pico SDK](https://github.com/raspberrypi/pico-sdk) | Auto-configured by VS Code extension | 2.2.0 |
-| [CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | Fetched via CMake `FetchContent` | v1.15.0 |
+| ไลบรารี | แหล่งที่มา | เวอร์ชัน |
+|---------|-----------|---------|
+| [Pico SDK](https://github.com/raspberrypi/pico-sdk) | กำหนดค่าอัตโนมัติโดยส่วนขยาย VS Code | 2.2.0 |
+| [CMSIS-DSP](https://github.com/ARM-software/CMSIS-DSP) | ดาวน์โหลดผ่าน CMake `FetchContent` | v1.15.0 |
 | [FreeRTOS-Kernel](https://github.com/FreeRTOS/FreeRTOS-Kernel) | Git submodule (`lib/FreeRTOS-Kernel`) | latest |
 
 ---
 
-## Getting Started
+## เริ่มต้นใช้งาน
 
-### 1. Clone with submodules
+### 1. Clone พร้อม submodule
 
 ```bash
 git clone --recurse-submodules https://github.com/fildsady/rp2350-cmsis-dsp-example.git
 cd rp2350-cmsis-dsp-example
 ```
 
-If you already cloned without `--recurse-submodules`:
+หาก clone ไปแล้วโดยไม่ได้ใส่ `--recurse-submodules`:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-### 2. Select an example
+### 2. เลือกตัวอย่างที่ต้องการ
 
-Open [`src/main.c`](src/main.c) and change the `ACTIVE_EXAMPLE` define:
+เปิดไฟล์ [`src/main.c`](src/main.c) แล้วเปลี่ยนค่า `ACTIVE_EXAMPLE`:
 
 ```c
-#define ACTIVE_EXAMPLE  EXAMPLE_FFT   /* ← change this */
+#define ACTIVE_EXAMPLE  EXAMPLE_FFT   /* ← เปลี่ยนตรงนี้ */
 ```
 
-Available options:
+ตัวเลือกที่มี:
 
 ```c
 #define ACTIVE_EXAMPLE  EXAMPLE_SINE_GEN    // 1
@@ -73,13 +73,13 @@ Available options:
 #define ACTIVE_EXAMPLE  EXAMPLE_GOERTZEL    // 6
 ```
 
-### 3. Build
+### 3. บิลด์โปรเจกต์
 
-#### Using VS Code (Recommended)
+#### ใช้ VS Code (แนะนำ)
 
-Open the project with the **Raspberry Pi Pico** VS Code extension. It will auto-detect the SDK and toolchain.
+เปิดโปรเจกต์ด้วยส่วนขยาย **Raspberry Pi Pico** ใน VS Code ระบบจะตรวจจับ SDK และ toolchain โดยอัตโนมัติ
 
-#### Using CMake directly
+#### ใช้ CMake โดยตรง
 
 ```bash
 mkdir build && cd build
@@ -88,27 +88,27 @@ make -j$(nproc)
 ```
 
 > [!IMPORTANT]
-> First build will take a few minutes — CMake will automatically download CMSIS-DSP v1.15.0 via `FetchContent`. Subsequent builds are fast.
+> การบิลด์ครั้งแรกอาจใช้เวลาสักครู่ — CMake จะดาวน์โหลด CMSIS-DSP v1.15.0 ผ่าน `FetchContent` โดยอัตโนมัติ การบิลด์ครั้งถัดไปจะเร็วขึ้นมาก
 
-### 4. Flash
+### 4. โปรแกรมลงบอร์ด
 
-Drag and drop the generated `dsp_examples.uf2` onto the Pico 2 in BOOTSEL mode, or use `picotool`:
+ลากวางไฟล์ `dsp_examples.uf2` ที่ได้ไปยังบอร์ด Pico 2 ที่อยู่ในโหมด BOOTSEL หรือใช้ `picotool`:
 
 ```bash
 picotool load build/dsp_examples.uf2 --force
 ```
 
-### 5. View output
+### 5. ดูผลลัพธ์
 
-Open a serial monitor at the Pico's USB CDC port (any baud rate). The VS Code Serial Monitor extension works directly.
+เปิด serial monitor ที่พอร์ต USB CDC ของ Pico (ความเร็ว baud rate ใดก็ได้) ส่วนขยาย Serial Monitor ของ VS Code ใช้งานได้โดยตรง
 
-All examples output **CSV data** that can be pasted into Excel, Python, or any plotting tool.
+ตัวอย่างทุกชุดแสดงผลเป็น **ข้อมูล CSV** ที่สามารถนำไปวางใน Excel, Python หรือโปรแกรมสร้างกราฟอื่นๆ ได้ทันที
 
 ---
 
-## Example Output
+## ตัวอย่างผลลัพธ์
 
-### FFT (Example 5)
+### FFT (ตัวอย่างที่ 5)
 
 ```
 === RFFT (arm_rfft_fast_f32, N=256, SR=8000Hz, bin=31.2Hz) ===
@@ -127,7 +127,7 @@ bin,freq_hz,magnitude
 ...
 ```
 
-### GOERTZEL / DTMF (Example 6)
+### GOERTZEL / DTMF (ตัวอย่างที่ 6)
 
 ```
 === GOERTZEL DTMF (arm_dot_prod_f32, N=128, SR=8000Hz) ===
@@ -141,39 +141,39 @@ DTMF decode (7 freqs, N=128): 87 us
 
 ---
 
-## Project Structure
+## โครงสร้างโปรเจกต์
 
 ```
 rp2350-cmsis-dsp-example/
 ├── src/
-│   └── main.c              # All 6 examples (selected by #define)
+│   └── main.c              # ตัวอย่างทั้ง 6 ชุด (เลือกด้วย #define)
 ├── inc/
-│   └── FreeRTOSConfig.h    # FreeRTOS configuration
+│   └── FreeRTOSConfig.h    # การกำหนดค่า FreeRTOS
 ├── lib/
 │   └── FreeRTOS-Kernel/    # Git submodule
-├── CMakeLists.txt          # Build config — fetches CMSIS-DSP automatically
+├── CMakeLists.txt          # การกำหนดค่าบิลด์ — ดาวน์โหลด CMSIS-DSP อัตโนมัติ
 ├── pico_sdk_import.cmake
-└── .vscode/                # VS Code + Pico extension settings
+└── .vscode/                # การตั้งค่า VS Code และส่วนขยาย Pico
 ```
 
 ---
 
-## Why CMSIS-DSP?
+## ทำไมต้องใช้ CMSIS-DSP?
 
-The Cortex-M33 in the RP2350 has hardware DSP extensions — SIMD instructions that operate on **2× 16-bit** or **4× 8-bit** values in a single cycle, plus a dedicated MAC (multiply-accumulate) pipeline. CMSIS-DSP compiles to use these instructions directly.
+Cortex-M33 ใน RP2350 มีตัวขยาย DSP ระดับฮาร์ดแวร์ — คำสั่ง SIMD ที่ประมวลผลค่า **2× 16 บิต** หรือ **4× 8 บิต** พร้อมกันในรอบสัญญาณนาฬิกาเดียว พร้อมกับ pipeline MAC (multiply-accumulate) เฉพาะทาง CMSIS-DSP คอมไพล์ให้ใช้คำสั่งเหล่านี้โดยตรง
 
-| Operation | Pure C | CMSIS-DSP | Speedup |
+| การดำเนินการ | Pure C | CMSIS-DSP | ความเร็วที่เพิ่มขึ้น |
 |---|---|---|---|
-| FIR filter (31 tap, 32 samples) | ~320 µs | ~80 µs | ~4× |
-| 256-point real FFT | ~900 µs | ~142 µs | ~6× |
-| DTMF decode (7 freqs, N=128) | ~320 µs | ~87 µs | ~3.7× |
+| ฟิลเตอร์ FIR (31 tap, 32 samples) | ~320 µs | ~80 µs | ~4× |
+| FFT สำหรับสัญญาณจริง 256 จุด | ~900 µs | ~142 µs | ~6× |
+| ถอดรหัส DTMF (7 ความถี่, N=128) | ~320 µs | ~87 µs | ~3.7× |
 
-> Numbers measured on RP2350 @ 125 MHz.
+> ผลการวัดบน RP2350 ที่ความถี่ 125 MHz
 
 ---
 
-## License
+## สัญญาอนุญาต
 
-This example code is released under the **MIT License**.  
-CMSIS-DSP is © ARM Ltd, licensed under Apache 2.0.  
-FreeRTOS Kernel is © Amazon, licensed under MIT.
+โค้ดตัวอย่างในโปรเจกต์นี้เผยแพร่ภายใต้ **MIT License**
+CMSIS-DSP เป็นลิขสิทธิ์ของ © ARM Ltd เผยแพร่ภายใต้ Apache 2.0
+FreeRTOS Kernel เป็นลิขสิทธิ์ของ © Amazon เผยแพร่ภายใต้ MIT
